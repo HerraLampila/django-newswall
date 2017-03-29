@@ -52,6 +52,8 @@ class Provider(ProviderBase):
         entries = api.user_timeline(screen_name=self.config['user'])
 
         for entry in entries:
+            media_url = entry.entities.get('media', [{}, ])[0].get(
+                'media_url_https', '')
             link = 'http://twitter.com/%s/status/%s' % (
                 self.config['user'],
                 entry.id,
@@ -59,6 +61,8 @@ class Provider(ProviderBase):
 
             self.create_story(
                 link,
-                title=entry.text,
+                image_url=media_url,
+                title=entry.id,
+                body=entry.text,
                 timestamp=entry.created_at,
             )
